@@ -1,10 +1,10 @@
 # 📡 IoT-Based Transformer Health Monitoring System 
 
-## 🚀 Project Overview
+## Project Overview
 
 The **IoT-Based Transformer Health Monitoring System** is designed to enhance transformer safety, efficiency, and reliability by continuously monitoring **temperature and load current . By integrating **IoT technology** with real-time sensors and automated control mechanisms, this system provides predictive maintenance insights and prevents transformer failures.  
 
-## 🔥 Key Features  
+##  Key Features  
 ✅ **Real-Time Monitoring:** Continuously tracks **temperature and current using integrated sensors.  
 ✅ **Automated Cooling System:**  
    - **70°C - 80°C →** Fan runs at **50% speed**  
