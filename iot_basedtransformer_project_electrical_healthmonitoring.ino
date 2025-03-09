@@ -37,6 +37,7 @@ ESP8266 wifi(&espSerial);
 float tempThreshold1 = 70.0; // Fan at 50% speed
 float tempThreshold2 = 80.0; // Fan at 100% speed, Buzzer ON
 float maxCurrent = 1.0;      // Load Cut-off at 1.0A
+float buzzerCurrentThreshold = 0.8; // New condition: Buzzer ON at 0.8A
 
 void setup() {
     Serial.begin(115200);
@@ -87,20 +88,22 @@ void loop() {
     // Cooling System Logic
     if (temp >= tempThreshold1 && temp < tempThreshold2) {
         setFanSpeed(50); // 50% Speed
-        digitalWrite(BUZZER_PIN, LOW);
     } else if (temp >= tempThreshold2) {
         setFanSpeed(100); // 100% Speed
-        digitalWrite(BUZZER_PIN, HIGH);
-        Blynk.logEvent("high_temperature", " High Temperature Alert! Cooling at Full Speed!");
     } else {
         stopCooling();
+    }
+
+    // **Buzzer Logic: ON if Current >= 0.8A OR Temp >= 80C**
+    if (temp >= tempThreshold2 || current >= buzzerCurrentThreshold) {
+        digitalWrite(BUZZER_PIN, HIGH);
+    } else {
         digitalWrite(BUZZER_PIN, LOW);
     }
 
     // **Load Cut-Off Logic**
     if (temp >= tempThreshold2 || current > maxCurrent) {
         digitalWrite(RELAY_PIN, LOW); // Turn Off Load
-        digitalWrite(BUZZER_PIN, HIGH);
         Blynk.logEvent("load_disconnected", " Load Disconnected! Overcurrent or Overheat Detected!");
     } else {
         digitalWrite(RELAY_PIN, HIGH); // Keep Load On
@@ -122,6 +125,7 @@ float getCurrent() {
     float current = (voltage - 2.5) / 0.185;   // ACS712 sensitivity is 185 mV/A
     return current;
 }
+
 // Function to Control Cooling System
 void setFanSpeed(int speedPercentage) {
     digitalWrite(MOTOR_IN1, HIGH);
